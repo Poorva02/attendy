@@ -1,2 +1,2 @@
-# attendy
-Edit from Dustyn's branch!!!!!!!!! <3
+# Attendy for Android
+Edit from Dustyn's new branch!!!!!!!!! <3

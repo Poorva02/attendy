@@ -1,21 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+        <!--Profile Header Layout-->
+        <RelativeLayout
+            android:id="@+id/profileHeaderLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@android:color/holo_green_light"
+            android:layout_above="@id/punchesLayout">
+
+
+            <ImageButton
+                android:id="@+id/profileImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_toEndOf="@+id/profileImageButton"
+                android:layout_toRightOf="@+id/profileImageButton"
+                android:text="John Doe" />
+        </RelativeLayout>
+
+        <!--Punch In/Out Layout-->
+        <RelativeLayout
+            android:id="@+id/punchesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+
+            android:background="@android:color/holo_blue_light">
+
+            <TextView
+                android:id="@+id/punchInTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Punch In" />
+
+            <TextView
+                android:id="@+id/punchOutTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/punchInTextView"
+                android:layout_toRightOf="@id/punchInTextView"
+                android:layout_margin="5dp"
+                android:text="Punch Out" />
+
+
+        </RelativeLayout>
+
+        <!--MapView Layout-->
+    <LinearLayout
+        android:id="@+id/mapViewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:background="@android:color/holo_orange_light"
+        android:orientation="vertical">
+
+
+        <!--<com.google.android.gms.maps.MapView-->
+            <!--android:id="@+id/mapView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:text="MAP VIEW GOES HERE"/>
+
+    </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:gravity="bottom"-->
+        <!--android:orientation="vertical">-->
+
+    <!--</LinearLayout>-->
+
+
+
+</LinearLayout>

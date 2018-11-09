@@ -45,26 +45,65 @@
             android:background="@android:color/holo_blue_light">
 
             <TextView
-                android:id="@+id/punchInTextView"
+                android:id="@+id/currentDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:text="9 November 2018."/>
+
+            <Button
+                android:id="@+id/punchInButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/currentDateTextView"
+                android:layout_margin="5dp"
                 android:text="Punch In" />
+
+            <TextView
+                android:id="@+id/punchInTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/punchInButton"
+                android:layout_alignLeft="@+id/punchInButton"
+
+                android:layout_margin="5dp"
+                android:text="9:30 AM" />
+
+            <Button
+                android:id="@+id/punchOutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/punchInButton"
+                android:layout_toRightOf="@id/punchInButton"
+                android:layout_below="@+id/currentDateTextView"
+
+                android:layout_margin="5dp"
+                android:text="Punch Out" />
 
             <TextView
                 android:id="@+id/punchOutTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/punchOutButton"
+                android:layout_alignLeft="@+id/punchOutButton"
                 android:layout_toEndOf="@+id/punchInTextView"
                 android:layout_toRightOf="@id/punchInTextView"
                 android:layout_margin="5dp"
-                android:text="Punch Out" />
+                android:text="05:30 PM" />
+
+            <TextView
+                android:id="@+id/totalHoursTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_below="@id/punchInTextView"
+                android:text="8 hours total."/>
 
 
         </RelativeLayout>
 
         <!--MapView Layout-->
-    <LinearLayout
+       <LinearLayout
         android:id="@+id/mapViewLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

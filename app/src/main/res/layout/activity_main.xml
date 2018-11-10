@@ -112,15 +112,16 @@
         android:orientation="vertical">
 
 
-        <!--<com.google.android.gms.maps.MapView-->
-            <!--android:id="@+id/mapView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
-        <TextView
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"
-            android:text="MAP VIEW GOES HERE"/>
+            android:layout_height="match_parent"/>
+
+           <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@android:color/darker_gray"-->
+            <!--android:text="MAP VIEW GOES HERE"/>-->
 
     </LinearLayout>
 

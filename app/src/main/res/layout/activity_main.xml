@@ -112,6 +112,12 @@
         android:orientation="vertical">
 
 
+           <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+               <!--android:name="com.google.android.gms.maps.MapFragment"-->
+               <!--android:id="@+id/mapFragment"-->
+               <!--android:layout_width="match_parent"-->
+               <!--android:layout_height="match_parent"/>-->
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"

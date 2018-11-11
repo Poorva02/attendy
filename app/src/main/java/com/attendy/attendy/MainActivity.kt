@@ -1,27 +1,28 @@
 package com.attendy.attendy
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import android.content.Intent
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.maps.*
-
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.attendy.attendy.R.id.mapView
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 
 
-//TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
+//TODO: Document map view with guides.
+//    https://www.raywenderlich.com/230-introduction-to-google-maps-api-for-android-with-kotlin
+//    http://www.zoftino.com/android-mapview-tutorial
 // TODO: Fix nullibity of mUser and mAuth
 
 class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {

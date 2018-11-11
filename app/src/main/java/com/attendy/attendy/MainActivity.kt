@@ -1,6 +1,8 @@
 package com.attendy.attendy
 
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -11,8 +13,8 @@ import android.widget.Toast
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -43,8 +45,13 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
 
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+    private var locationUpdateState = false
 
 
+
+    // from raywenderlich and zoftino
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -83,12 +90,20 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         mMapView.getMapAsync(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//        val mapFragment = supportFragmentManager
-//                .findFragmentById(R.id.mapView) as? SupportMapFragment
-//        mapFragment?.getMapAsync(this)
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                super.onLocationResult(p0)
+
+                lastLocation = p0.lastLocation
+                placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
+            }
+        }
+        createLocationRequest()
     }
 
 
+    // from raywenderlich
     override fun onMapReady(googleMap: GoogleMap) {
         gMap = googleMap
 //        gMap.setMinZoomPreference(15.0.toFloat())
@@ -104,10 +119,12 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         setUpMap()
     }
 
+    // from raywenderlich
     private fun setUpMap() {
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_PERMISSION_REQUEST_CODE)
             return
         }
 
@@ -123,6 +140,7 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         }
     }
 
+    // from raywenderlich
     private fun placeMarkerOnMap(location: LatLng) {
         // 1
         val markerOptions = MarkerOptions().position(location)
@@ -130,7 +148,68 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         gMap.addMarker(markerOptions)
     }
 
+    // from raywenderlich
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_PERMISSION_REQUEST_CODE)
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    }
 
+
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 5000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            locationUpdateState = true
+            startLocationUpdates()
+        }
+
+        task.addOnFailureListener { e ->
+            if (e is ResolvableApiException) {
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    e.startResolutionForResult(this,
+                            REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
+    }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//    }
+
+    // from raywenderlich
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
+                locationUpdateState = true
+                startLocationUpdates()
+            }
+        }
+    }
+
+
+    // from zoftino
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -142,38 +221,48 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
 
         mapView.onSaveInstanceState(mapViewBundle)
     }
-
+    // from zoftino and raywenderlich
     override fun onResume() {
         super.onResume()
+        if (!locationUpdateState) {
+            startLocationUpdates()
+        }
         mapView.onResume()
     }
 
+    // from zoftino
     override fun onStart() {
         super.onStart()
         mapView.onStart()
     }
 
+    // from zoftino
     override fun onStop() {
         super.onStop()
         mapView.onStop()
     }
 
+    // from zoftino and raywenderlich
     override fun onPause() {
         mapView.onPause()
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         super.onPause()
     }
 
+    // from zoftino
     override fun onDestroy() {
         mapView.onDestroy()
         super.onDestroy()
     }
 
+    // from zoftino
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
 
 
+    // from raywenderlich
     override fun onMarkerClick(p0: Marker?) = false
 
 
@@ -198,6 +287,8 @@ class MainActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedList
         }
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+        private const val REQUEST_CHECK_SETTINGS = 2
+
 
     }
 }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.attendy.attendy">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +20,7 @@
 
         <activity android:name=".SignInActivity"/>
 
+
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
         <meta-data
@@ -27,5 +30,7 @@
 
 
     </application>
+
+
 
 </manifest>

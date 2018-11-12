@@ -1,2 +1,3 @@
 # Attendy for Android
-Edit from Dustyn's new branch!!!!!!!!! <3
+project for CSC 780 at SFSU.
+by Poorva Rathi and Dustyn Buchanan August

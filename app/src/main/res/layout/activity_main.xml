@@ -9,101 +9,101 @@
     tools:context=".MainActivity">
 
 
-        <!--Profile Header Layout-->
-        <RelativeLayout
-            android:id="@+id/profileHeaderLayout"
-            android:layout_width="match_parent"
+    <!--Profile Header Layout-->
+    <RelativeLayout
+        android:id="@+id/profileHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@android:color/holo_green_light"
+        android:layout_above="@id/punchesLayout">
+
+
+        <ImageButton
+            android:id="@+id/profileImageButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:background="@android:color/holo_green_light"
-            android:layout_above="@id/punchesLayout">
+            android:layout_margin="5dp" />
 
-
-            <ImageButton
-                android:id="@+id/profileImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp" />
-
-            <TextView
-                android:id="@+id/nameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_toEndOf="@+id/profileImageButton"
-                android:layout_toRightOf="@+id/profileImageButton"
-                android:text="John Doe" />
-        </RelativeLayout>
-
-        <!--Punch In/Out Layout-->
-        <RelativeLayout
-            android:id="@+id/punchesLayout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_toEndOf="@+id/profileImageButton"
+            android:layout_toRightOf="@+id/profileImageButton"
+            android:text="John Doe" />
+    </RelativeLayout>
 
-            android:background="@android:color/holo_blue_light">
+    <!--Punch In/Out Layout-->
+    <RelativeLayout
+        android:id="@+id/punchesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
 
-            <TextView
-                android:id="@+id/currentDateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="9 November 2018."/>
+        android:background="@android:color/holo_blue_light">
 
-            <Button
-                android:id="@+id/punchInButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/currentDateTextView"
-                android:layout_margin="5dp"
-                android:text="Punch In" />
+        <TextView
+            android:id="@+id/currentDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="9 November 2018."/>
 
-            <TextView
-                android:id="@+id/punchInTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/punchInButton"
-                android:layout_alignLeft="@+id/punchInButton"
+        <Button
+            android:id="@+id/punchInButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentDateTextView"
+            android:layout_margin="5dp"
+            android:text="Punch In" />
 
-                android:layout_margin="5dp"
-                android:text="9:30 AM" />
+        <TextView
+            android:id="@+id/punchInTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/punchInButton"
+            android:layout_alignLeft="@+id/punchInButton"
 
-            <Button
-                android:id="@+id/punchOutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/punchInButton"
-                android:layout_toRightOf="@id/punchInButton"
-                android:layout_below="@+id/currentDateTextView"
+            android:layout_margin="5dp"
+            android:text="9:30 AM" />
 
-                android:layout_margin="5dp"
-                android:text="Punch Out" />
+        <Button
+            android:id="@+id/punchOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/punchInButton"
+            android:layout_toRightOf="@id/punchInButton"
+            android:layout_below="@+id/currentDateTextView"
 
-            <TextView
-                android:id="@+id/punchOutTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/punchOutButton"
-                android:layout_alignLeft="@+id/punchOutButton"
-                android:layout_toEndOf="@+id/punchInTextView"
-                android:layout_toRightOf="@id/punchInTextView"
-                android:layout_margin="5dp"
-                android:text="05:30 PM" />
+            android:layout_margin="5dp"
+            android:text="Punch Out" />
 
-            <TextView
-                android:id="@+id/totalHoursTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_below="@id/punchInTextView"
-                android:text="8 hours total."/>
+        <TextView
+            android:id="@+id/punchOutTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/punchOutButton"
+            android:layout_alignLeft="@+id/punchOutButton"
+            android:layout_toEndOf="@+id/punchInTextView"
+            android:layout_toRightOf="@id/punchInTextView"
+            android:layout_margin="5dp"
+            android:text="05:30 PM" />
+
+        <TextView
+            android:id="@+id/totalHoursTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_below="@id/punchInTextView"
+            android:text="8 hours total."/>
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <!--MapView Layout-->
-       <LinearLayout
+    <!--MapView Layout-->
+    <LinearLayout
         android:id="@+id/mapViewLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -112,31 +112,21 @@
         android:orientation="vertical">
 
 
-           <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
-               <!--android:name="com.google.android.gms.maps.MapFragment"-->
-               <!--android:id="@+id/mapFragment"-->
-               <!--android:layout_width="match_parent"-->
-               <!--android:layout_height="match_parent"/>-->
-
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-           <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@android:color/darker_gray"-->
-            <!--android:text="MAP VIEW GOES HERE"/>-->
+
 
     </LinearLayout>
 
     <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:gravity="bottom"-->
-        <!--android:orientation="vertical">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:gravity="bottom"-->
+    <!--android:orientation="vertical">-->
 
     <!--</LinearLayout>-->
 

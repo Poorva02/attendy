@@ -32,7 +32,9 @@
             android:layout_margin="5dp"
             android:layout_toEndOf="@+id/profileImageButton"
             android:layout_toRightOf="@+id/profileImageButton"
-            android:text="John Doe" />
+            android:text="John Doe"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
     </RelativeLayout>
 
     <!--Punch In/Out Layout-->
@@ -49,7 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="9 November 2018."/>
+            android:text="9 November 2018."
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/punchInButton"
@@ -57,7 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/currentDateTextView"
             android:layout_margin="5dp"
-            android:text="Punch In" />
+            android:text="Punch In"
+            android:background="@android:color/holo_green_light"/>
 
         <TextView
             android:id="@+id/punchInTextView"
@@ -65,9 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/punchInButton"
             android:layout_alignLeft="@+id/punchInButton"
-
-            android:layout_margin="5dp"
-            android:text="9:30 AM" />
+            android:textStyle="bold"
+            android:layout_margin="5dp" />
 
         <Button
             android:id="@+id/punchOutButton"
@@ -76,7 +79,7 @@
             android:layout_toEndOf="@+id/punchInButton"
             android:layout_toRightOf="@id/punchInButton"
             android:layout_below="@+id/currentDateTextView"
-
+            android:background="@android:color/holo_green_light"
             android:layout_margin="5dp"
             android:text="Punch Out" />
 
@@ -89,7 +92,7 @@
             android:layout_toEndOf="@+id/punchInTextView"
             android:layout_toRightOf="@id/punchInTextView"
             android:layout_margin="5dp"
-            android:text="05:30 PM" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/totalHoursTextView"
@@ -97,7 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_below="@id/punchInTextView"
-            android:text="8 hours total."/>
+            android:text="8 hours total."
+            android:textStyle="bold"/>
 
 
     </RelativeLayout>

@@ -41,7 +41,12 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import com.attendy.attendy.R.id.textView
+import com.attendy.attendy.R.id.time
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -57,6 +62,9 @@ import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 //TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
@@ -147,12 +155,41 @@ class MainActivity : AppCompatActivity(),
         }
         createLocationRequest()
 
+        //display date
+        val calendar = Calendar.getInstance()
+        val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
+        val CurrentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
+        CurrentDateTextView.text = currentDate
 
 
+        //display username
+        val TextViewUsername = findViewById<TextView>(R.id.nameTextView)
+       TextViewUsername.setText("$mUsername")
 
+        //display punch in time
+        val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
+        buttonPunchIn.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val format = SimpleDateFormat("HH:mm:ss")
+            val timein = format.format(calendar.time)
 
+            val textView = findViewById<TextView>(R.id.punchInTextView)
+            textView.text = timein
+        }
 
-    }
+        //display punch out time
+
+        val buttonPunchOut = findViewById<Button>(R.id.punchOutButton)
+        buttonPunchOut.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val format = SimpleDateFormat("HH:mm:ss")
+            val timeout = format.format(calendar.time)
+
+            val textView = findViewById<TextView>(R.id.punchOutTextView)
+            textView.text = timeout
+        }
+
+            }
 
     private fun doGeofencestuff() {
 //        geofencingClient = LocationServices.getGeofencingClient(this)

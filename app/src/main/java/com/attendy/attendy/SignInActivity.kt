@@ -13,9 +13,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.SignInButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.android.gms.common.api.GoogleApiClient
-
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
 
@@ -23,7 +22,6 @@ import com.google.firebase.auth.GoogleAuthProvider
  * TODO: Document
  * https://firebase.google.com/docs/auth/android/firebaseui?authuser=0
  *
- * TODO: onclick listener can use Lmbda to save lines of code
  *
  */
 
@@ -43,7 +41,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-
         mSignInButton = findViewById(R.id.sign_in_button)
         mSignInButton.setOnClickListener(this)
 
@@ -58,7 +55,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                 .build()
 
         mAuth = FirebaseAuth.getInstance()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -78,7 +74,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
         }
     }
 
-
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         mAuth.signInWithCredential(credential)
@@ -94,7 +89,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                     }
                 }
     }
-
 
     override fun onClick(v: View?) {
         when (v!!.id) {

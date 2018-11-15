@@ -67,7 +67,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-//TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
+// TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
+//    https://www.raywenderlich.com/7372-geofencing-api-tutorial-for-android
+//    https://code.tutsplus.com/tutorials/how-to-work-with-geofences-on-android--cms-26639
 // TODO: Fix nullibity of mUser and mAuth
 
 
@@ -95,14 +97,15 @@ class MainActivity : AppCompatActivity(),
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
+
+
+
     private lateinit var geoFenceMarker: Marker
     private lateinit var geofenceLimits: Circle
     private lateinit var geofencePendingIntent: PendingIntent
-
     lateinit var geofencingClient: GeofencingClient
 
     lateinit var geofenceList: MutableList<Geofence>
-
 
 
     // from raywenderlich and zoftino
@@ -118,7 +121,6 @@ class MainActivity : AppCompatActivity(),
         if (mUser == null) {
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
-//            return
         } else {
             mUsername = mUser!!.displayName!!
             if (mUser!!.photoUrl != null) {
@@ -129,6 +131,7 @@ class MainActivity : AppCompatActivity(),
         mGoogleApiClient = GoogleApiClient.Builder(this)
                 .enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .addApi(LocationServices.API)
                 .build()
 
         Toast.makeText(this,"$mUsername has logged in.", Toast.LENGTH_LONG).show()
@@ -191,34 +194,6 @@ class MainActivity : AppCompatActivity(),
 
             }
 
-    private fun doGeofencestuff() {
-//        geofencingClient = LocationServices.getGeofencingClient(this)
-//
-//        geofenceList.add(Geofence.Builder()
-//                .setRequestId("Geofence Request ID")
-//                .setCircularRegion(37.7219, -122.4782, 50f)
-//                .setExpirationDuration(1000)
-//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-//                .build())
-//
-//        val geofencePendingIntent: PendingIntent by lazy {
-//            val intent = Intent(this, GeofenceTransitionsIntentService::class.java)
-//            // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-//            // addGeofences() and removeGeofences().
-//            PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//        }
-//
-//        geofencingClient?.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
-//            addOnSuccessListener {
-//                // Geofences removed
-//                // ...
-//            }
-//            addOnFailureListener {
-//                // Failed to remove geofences
-//                // ...
-//            }
-//
-//        }
     }
 
     private fun getGeofencingRequest(): GeofencingRequest {
@@ -227,7 +202,6 @@ class MainActivity : AppCompatActivity(),
             addGeofences(geofenceList)
         }.build()
     }
-
 
     // from raywenderlich
     override fun onMapReady(googleMap: GoogleMap) {
@@ -268,7 +242,6 @@ class MainActivity : AppCompatActivity(),
         gMap.addMarker(markerOptions)
     }
 
-
     // from raywenderlich
     private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -280,7 +253,7 @@ class MainActivity : AppCompatActivity(),
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
-
+    // from raywenderlich
     private fun createLocationRequest() {
         locationRequest = LocationRequest()
         locationRequest.interval = 10000
@@ -298,7 +271,6 @@ class MainActivity : AppCompatActivity(),
             startLocationUpdates()
         }
 
-
         task.addOnFailureListener { e ->
             if (e is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
@@ -315,10 +287,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
-
     // from raywenderlich
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -330,7 +298,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-
     // from zoftino
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -340,9 +307,9 @@ class MainActivity : AppCompatActivity(),
             mapViewBundle = Bundle()
             outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
         }
-
         mapView.onSaveInstanceState(mapViewBundle)
     }
+
     // from zoftino and raywenderlich
     override fun onResume() {
         super.onResume()
@@ -383,19 +350,17 @@ class MainActivity : AppCompatActivity(),
         mapView.onLowMemory()
     }
 
-
     // from raywenderlich
     override fun onMarkerClick(p0: Marker?) = false
 
     override fun onMapClick(latLng: LatLng?) {
         Log.d(TAG, "onMapClick("+latLng +")")
         print("onMapClick"+latLng)
-//        startGeofence()
         markerForGeofence(latLng!!)
-        Toast.makeText(this,"Map was clicked.", Toast.LENGTH_LONG).show()
+        startGeofence()
 
+//        Toast.makeText(this,"Map was clicked.", Toast.LENGTH_LONG).show()
     }
-
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
         Log.d(TAG, "onConnectionFailed:$connectionResult")
@@ -403,6 +368,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
+    // from code.tutsplus
     private fun markerForGeofence(latLng: LatLng) {
         val title = latLng.latitude.toString() +  ", " + latLng.longitude.toString();
         // Define marker options
@@ -422,38 +388,43 @@ class MainActivity : AppCompatActivity(),
         drawGeofence()
     }
 
+    // from code.tutsplus
     override fun onResult(status: Status) {
         if (status.isSuccess) {
             // Save geofence
-            startGeofence()
-
             drawGeofence()
+//            startGeofence()
         } else {
             // Handle error
         }
-
     }
 
     //TODO FIX THIS: geofencemarker is causing null pointer from lateinit.... never initialized
+    // from code.tutsplus
+    // Start Geofence creation process
     private fun startGeofence() {
         if (geoFenceMarker != null) {
             val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
             val geofenceRequest = createGeofenceRequest(geofence)
             addGeofence(geofenceRequest)
-
         }
     }
 
+    // from code.tutsplus
+    // Create a Geofence
     private fun createGeofence(latLng: LatLng, radius: Float): Geofence {
-
         return Geofence.Builder()
                 .setRequestId("Test Geofence")
                 .setCircularRegion(latLng.latitude, latLng.longitude, radius)
                 .setExpirationDuration(3_600_000)
-                .setTransitionTypes(7)
+                .setTransitionTypes( GeofencingRequest.INITIAL_TRIGGER_ENTER
+                        or GeofencingRequest.INITIAL_TRIGGER_EXIT)
+                .setLoiteringDelay(45)
                 .build()
     }
 
+    // from code.tutsplus
+    // Create a Geofence Request
     private fun createGeofenceRequest(geofence: Geofence): GeofencingRequest {
         return GeofencingRequest.Builder()
                 .setInitialTrigger( GeofencingRequest.INITIAL_TRIGGER_ENTER)
@@ -461,7 +432,9 @@ class MainActivity : AppCompatActivity(),
                 .build()
     }
 
-      private fun addGeofence(request: GeofencingRequest) {
+    // from code.tutsplus
+    // Add the created GeofenceRequest to the device's monitoring list
+    private fun addGeofence(request: GeofencingRequest) {
         Log.d(TAG, "addGeofence");
         if ( checkPermission())
             LocationServices.GeofencingApi.addGeofences(
@@ -471,29 +444,29 @@ class MainActivity : AppCompatActivity(),
             ).setResultCallback(this)
     }
 
+    // from code.tutsplus
     private fun createGeofencePendingIntent(): PendingIntent{
 
-        if (geofencePendingIntent != null) {
-            return geofencePendingIntent
-        }
+//        if (geofencePendingIntent != null) {
+//            return geofencePendingIntent
+//        }
 
         val intent = Intent(this, GeofenceTransitionsIntentService::class.java)
-
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
 
     private fun checkPermission(): Boolean {
-
         return(ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
     }
 
+    // from code.tutsplus
+    // Draw Geofence circle on GoogleMap
     private fun drawGeofence() {
 //        if (geofenceLimits != null) {
 //            geofenceLimits.remove()
 //        }
-
         val circleOptions: CircleOptions = CircleOptions()
                 .center(geoFenceMarker.position)
                 .radius(GEOFENCE_RADIUS)
@@ -501,7 +474,6 @@ class MainActivity : AppCompatActivity(),
                 .fillColor(Color.argb(0,0,0,0))
         geofenceLimits = gMap.addCircle( circleOptions )
         gMap.addCircle(circleOptions)
-
     }
 
 
@@ -522,7 +494,7 @@ class MainActivity : AppCompatActivity(),
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val EXTRA_LAT_LNG = "EXTRA_LAT_LNG"
-        private val GEOFENCE_RADIUS: Double = 500.0 // in meters
+        private val GEOFENCE_RADIUS: Double = 50.0 // in meters
 
 
         fun newIntent(context: Context, latLng: LatLng): Intent {

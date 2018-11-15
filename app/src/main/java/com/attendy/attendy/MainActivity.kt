@@ -41,12 +41,9 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.attendy.attendy.R.id.textView
-import com.attendy.attendy.R.id.time
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -65,6 +62,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 // TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
@@ -80,6 +78,7 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMapClickListener,
         ResultCallback<Status> {
+
 
     // TODO: Fix null initializer for mUser
     private var mAuth: FirebaseAuth? = null
@@ -107,6 +106,14 @@ class MainActivity : AppCompatActivity(),
 
     lateinit var geofenceList: MutableList<Geofence>
 
+    private var userHasPunchedIn: Boolean = false
+
+    private lateinit var timeInString: String
+    private lateinit var timeInDate: Date
+    private lateinit var timeOutString: String
+    private lateinit var timeOutDate: Date
+
+
 
     // from raywenderlich and zoftino
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,12 +136,12 @@ class MainActivity : AppCompatActivity(),
         }
 
         mGoogleApiClient = GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .addApi(LocationServices.API)
                 .build()
 
-        Toast.makeText(this,"$mUsername has logged in.", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "$mUsername has logged in.", Toast.LENGTH_LONG).show()
         //TODO : Initialze progress bar and Recyvle view
 
         mapViewBundle = null;
@@ -157,43 +164,71 @@ class MainActivity : AppCompatActivity(),
             }
         }
         createLocationRequest()
+        setupDate()
+        setupUsername()
+        setupPunchIn()
+        setUpPunchOut()
 
+
+
+
+
+
+    }
+
+    private fun setupDate() {
         //display date
         val calendar = Calendar.getInstance()
         val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
         val CurrentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
         CurrentDateTextView.text = currentDate
+    }
 
-
+    private fun setupUsername() {
         //display username
         val TextViewUsername = findViewById<TextView>(R.id.nameTextView)
-       TextViewUsername.setText("$mUsername")
+        TextViewUsername.setText("$mUsername")
+    }
 
+    private fun setupPunchIn() {
         //display punch in time
         val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
         buttonPunchIn.setOnClickListener {
             val calendar = Calendar.getInstance()
             val format = SimpleDateFormat("HH:mm:ss")
-            val timein = format.format(calendar.time)
+            timeInDate = calendar.time
+            timeInString = format.format(timeInDate)
 
             val textView = findViewById<TextView>(R.id.punchInTextView)
-            textView.text = timein
+            textView.text = timeInString
+            userHasPunchedIn = true
         }
+    }
 
+    private fun setUpPunchOut(){
         //display punch out time
-
         val buttonPunchOut = findViewById<Button>(R.id.punchOutButton)
         buttonPunchOut.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val format = SimpleDateFormat("HH:mm:ss")
-            val timeout = format.format(calendar.time)
+            if ( userHasPunchedIn ) {
+                val calendar = Calendar.getInstance()
+                val format = SimpleDateFormat("HH:mm:ss")
+                timeOutDate = calendar.time
+                timeOutString = format.format(timeOutDate)
 
-            val textView = findViewById<TextView>(R.id.punchOutTextView)
-            textView.text = timeout
-        }
+                val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
+                timeOutTextView.text = timeOutString
 
+                val timeIntervalTextView = findViewById<TextView>(R.id.totalHoursTextView)
+
+
+                // TODO: Update to display correct interval.
+                var timeInterval = timeOutDate.time -timeInDate.time
+                val t1 = TimeUnit.MILLISECONDS.toHours(timeInterval)
+                val timeIntervalString = t1
+
+                timeIntervalTextView.text = "Hours worked: ${timeIntervalString.toString()}"
             }
-
+        }
     }
 
     private fun getGeofencingRequest(): GeofencingRequest {

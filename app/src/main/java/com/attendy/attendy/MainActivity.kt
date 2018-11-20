@@ -144,9 +144,9 @@ class MainActivity : AppCompatActivity(),
         Toast.makeText(this, "$mUsername has logged in.", Toast.LENGTH_LONG).show()
         //TODO : Initialze progress bar and Recyvle view
 
-        mapViewBundle = null;
+        mapViewBundle = null
         if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
         }
 
         mMapView = findViewById(R.id.mapView)
@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(),
     private fun setupUsername() {
         //display username
         val TextViewUsername = findViewById<TextView>(R.id.nameTextView)
-        TextViewUsername.setText("$mUsername")
+        TextViewUsername.text = "$mUsername"
     }
 
     private fun setupPunchIn() {
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity(),
                 val t1 = TimeUnit.MILLISECONDS.toHours(timeInterval)
                 val timeIntervalString = t1
 
-                timeIntervalTextView.text = "Hours worked: ${timeIntervalString.toString()}"
+                timeIntervalTextView.text = "Hours worked: $timeIntervalString"
             }
         }
     }
@@ -241,7 +241,7 @@ class MainActivity : AppCompatActivity(),
     // from raywenderlich
     override fun onMapReady(googleMap: GoogleMap) {
         gMap = googleMap
-        gMap.getUiSettings().setZoomControlsEnabled(true)
+        gMap.uiSettings.isZoomControlsEnabled = true
         gMap.setOnMarkerClickListener(this)
         gMap.setOnMapClickListener(this)
 
@@ -405,12 +405,12 @@ class MainActivity : AppCompatActivity(),
 
     // from code.tutsplus
     private fun markerForGeofence(latLng: LatLng) {
-        val title = latLng.latitude.toString() +  ", " + latLng.longitude.toString();
+        val title = latLng.latitude.toString() +  ", " + latLng.longitude.toString()
         // Define marker options
          val markerOptions =  MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                .title(title);
+                .title(title)
         if ( gMap!=null ) {
             // Remove last geoFenceMarker
 //            if (geoFenceMarker != null) {
@@ -470,7 +470,7 @@ class MainActivity : AppCompatActivity(),
     // from code.tutsplus
     // Add the created GeofenceRequest to the device's monitoring list
     private fun addGeofence(request: GeofencingRequest) {
-        Log.d(TAG, "addGeofence");
+        Log.d(TAG, "addGeofence")
         if ( checkPermission())
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,

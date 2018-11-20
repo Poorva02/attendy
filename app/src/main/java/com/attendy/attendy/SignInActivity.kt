@@ -21,11 +21,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 /**
  * TODO: Document
  * https://firebase.google.com/docs/auth/android/firebaseui?authuser=0
- *
- *
  */
-
-
 
 class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
     private val REQUEST_CODE_SIGN_IN = 4242

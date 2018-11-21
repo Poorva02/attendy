@@ -7,10 +7,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import com.attendy.attendy.MainActivity
+import com.google.android.gms.location.GeofencingEvent
 import com.google.android.gms.maps.model.LatLng
 
 class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsIntentService") {
+
+    companion object {
+        private const val LOG_TAG = "GeoTrIntentService"
+    }
 
     private val TAG = "GeofenceTransitionsIntentService"
     private val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
@@ -19,7 +25,23 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     // ...
     override fun onHandleIntent(intent: Intent?) {
 
+        val geofencingEvent = GeofencingEvent.fromIntent(intent)
+        if (geofencingEvent.hasError()) {
+            val errorMessage = GeofenceErrorMessages.getErrorString(this,
+                    geofencingEvent.errorCode)
+            Log.e(LOG_TAG, errorMessage)
+            return
+        }
+
+        handleEvent(geofencingEvent)
+
     }
+
+    private fun handleEvent(event: GeofencingEvent) {
+        sendNotification(this, message, latLng)
+
+    }
+
 
 
 

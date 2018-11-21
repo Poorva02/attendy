@@ -16,6 +16,9 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 
 
+// TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
+//    https://code.tutsplus.com/tutorials/how-to-work-with-geofences-on-android--cms-26639
+//
 class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsIntentService") {
 
     private val TAG = "GeofenceTransIntentServ"
@@ -102,41 +105,6 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
         return notificationBuilder.build()
     }
-
-
-
-//    private fun sendNotification(context: Context, message: String, latLng: LatLng) {
-//        val notificationManager = context
-//                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-//                && notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
-//            val name = context.getString(R.string.app_name)
-//            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID,
-//                    name,
-//                    NotificationManager.IMPORTANCE_DEFAULT)
-//
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//
-//        val intent = MainActivity.newIntent(context.applicationContext, latLng)
-//
-//        val stackBuilder = TaskStackBuilder.create(context)
-//                .addParentStack(MainActivity::class.java)
-//                .addNextIntent(intent)
-//        val notificationPendingIntent = stackBuilder
-//                .getPendingIntent(getUniqueId(), PendingIntent.FLAG_UPDATE_CURRENT)
-//
-//        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setContentTitle(message)
-//                .setContentIntent(notificationPendingIntent)
-//                .setAutoCancel(true)
-//                .build()
-//
-//        notificationManager.notify(getUniqueId(), notification)
-//    }
-
 
     private fun getErrorString(errorCode: Int): String {
         when (errorCode) {

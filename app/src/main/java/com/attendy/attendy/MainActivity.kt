@@ -115,6 +115,9 @@ class MainActivity : AppCompatActivity(),
 
 
 
+
+
+
     // from raywenderlich and zoftino
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -512,6 +515,8 @@ class MainActivity : AppCompatActivity(),
     }
 
 
+
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -531,12 +536,21 @@ class MainActivity : AppCompatActivity(),
         private const val EXTRA_LAT_LNG = "EXTRA_LAT_LNG"
         private val GEOFENCE_RADIUS: Double = 50.0 // in meters
 
+        private val NOTIFICATION_MSG = "NOTIFICATION MSG"
+
+
 
         fun newIntent(context: Context, latLng: LatLng): Intent {
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra(EXTRA_LAT_LNG, latLng)
             return intent
         }
+
+         fun makeNotificationIntent(context: Context, msg: String): Intent {
+             var intent = Intent(context, MainActivity::class.java)
+             intent.putExtra(NOTIFICATION_MSG, msg)
+             return intent
+         }
 
     }
 }

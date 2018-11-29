@@ -9,11 +9,12 @@ import android.graphics.Color
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
 import com.attendy.attendy.MainActivity
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
+
+
 
 
 // TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
@@ -30,19 +31,20 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     // ...
     override fun onHandleIntent(intent: Intent?) {
 
-        Toast.makeText(this, "Geofence event handled.", Toast.LENGTH_LONG).show()
+//        Toast.makeText(this, "Geofence event handled.", Toast.LENGTH_LONG).show()
         Log.d(TAG, "geofence handled.")
 
         val geofencingEvent: GeofencingEvent = GeofencingEvent.fromIntent(intent)
 
-        if ( geofencingEvent.hasError() ) {
-            val errorMessage: String = getErrorString( geofencingEvent.errorCode )
+        if (geofencingEvent.hasError()) {
+            val errorMessage: String = getErrorString(geofencingEvent.errorCode)
             Log.e(TAG, errorMessage)
         }
 
 
         val geofenceTransition: Int = geofencingEvent.geofenceTransition
-        if ( geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER
+                || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
 
             val triggeringGeofenes = geofencingEvent.triggeringGeofences
             val geofenceTransitionDetails = getGeofenceTrasitionDetails(geofenceTransition, triggeringGeofenes)
@@ -55,6 +57,9 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     private fun getGeofenceTrasitionDetails(geofenceTransion: Int, triggeringGeofences: List<Geofence>): String {
 
 
+        Log.i(TAG, "getGeofenceTrasitionDetails " + geofenceTransion)
+
+
         val triggeringGeofencesList = ArrayList<Geofence>()
 
         for (geofence in triggeringGeofences) {
@@ -63,9 +68,9 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
         var status: String? = null
 
-        if ( geofenceTransion == Geofence.GEOFENCE_TRANSITION_ENTER) {
+        if (geofenceTransion == Geofence.GEOFENCE_TRANSITION_ENTER) {
             status = "Entering"
-        } else if ( geofenceTransion == Geofence.GEOFENCE_TRANSITION_EXIT) {
+        } else if (geofenceTransion == Geofence.GEOFENCE_TRANSITION_EXIT) {
             status = "Exiting"
         }
 
@@ -83,28 +88,50 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
         val notificationPendingIntent: PendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationChannel = createNotificationChannel(notificationManager)
 
         notificationManager.notify(GEOFENCE_NOTIFICATION_ID,
-                createNotification(msg, notificationPendingIntent))
+                createNotification(msg, notificationPendingIntent, notificationChannel.id))
     }
 
-    private fun createNotification(msg: String, notificationPendingIntent: PendingIntent): Notification {
+    private fun createNotification(msg: String, notificationPendingIntent: PendingIntent, notificationChannelId: String): Notification {
+        Log.i(TAG, "createNotiification  " + msg)
 
-        val notificationBuilder = NotificationCompat.Builder(this)
 
+
+        val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
         notificationBuilder
                 .setSmallIcon(R.drawable.ic_map_pin_marked)
                 .setColor(Color.RED)
-                .setContentTitle(msg)
-                .setContentText("Geofence Notification!")
+                .setContentTitle("Geofence Notification!")
+                .setContentText(msg)
                 .setContentIntent(notificationPendingIntent)
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setDefaults(Notification.DEFAULT_SOUND)
-        .setAutoCancel(true)
+                .setAutoCancel(true)
 
         return notificationBuilder.build()
     }
+
+    private fun createNotificationChannel(notificationManager: NotificationManager): NotificationChannel {
+
+
+
+        val channelId = "attendy_channel_id"
+        val channelName = "Attendy Channel"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val notificationChannel = NotificationChannel(channelId, channelName, importance)
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Color.RED
+        notificationChannel.enableVibration(true)
+        notificationChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+        notificationManager.createNotificationChannel(notificationChannel)
+
+        return notificationChannel
+    }
+
+
 
     private fun getErrorString(errorCode: Int): String {
         when (errorCode) {

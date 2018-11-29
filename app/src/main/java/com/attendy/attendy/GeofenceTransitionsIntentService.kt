@@ -30,8 +30,6 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
     // ...
     override fun onHandleIntent(intent: Intent?) {
-
-//        Toast.makeText(this, "Geofence event handled.", Toast.LENGTH_LONG).show()
         Log.d(TAG, "geofence handled.")
 
         val geofencingEvent: GeofencingEvent = GeofencingEvent.fromIntent(intent)
@@ -55,8 +53,6 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     }
 
     private fun getGeofenceTrasitionDetails(geofenceTransion: Int, triggeringGeofences: List<Geofence>): String {
-
-
         Log.i(TAG, "getGeofenceTrasitionDetails " + geofenceTransion)
 
 
@@ -97,8 +93,6 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     private fun createNotification(msg: String, notificationPendingIntent: PendingIntent, notificationChannelId: String): Notification {
         Log.i(TAG, "createNotiification  " + msg)
 
-
-
         val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
         notificationBuilder
                 .setSmallIcon(R.drawable.ic_map_pin_marked)
@@ -115,9 +109,6 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     }
 
     private fun createNotificationChannel(notificationManager: NotificationManager): NotificationChannel {
-
-
-
         val channelId = "attendy_channel_id"
         val channelName = "Attendy Channel"
         val importance = NotificationManager.IMPORTANCE_HIGH

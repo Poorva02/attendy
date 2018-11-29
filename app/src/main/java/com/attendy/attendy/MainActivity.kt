@@ -32,9 +32,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 // TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
@@ -81,9 +83,9 @@ class MainActivity : AppCompatActivity(),
     private var userHasPunchedIn: Boolean = false
 
     private lateinit var timeInString: String
-    private lateinit var timeInDate: Date
+    private lateinit var timeInDate: LocalDateTime
     private lateinit var timeOutString: String
-    private lateinit var timeOutDate: Date
+    private lateinit var timeOutDate: LocalDateTime
 
 
 
@@ -170,9 +172,9 @@ class MainActivity : AppCompatActivity(),
         val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
         buttonPunchIn.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val format = SimpleDateFormat("HH:mm:ss")
-            timeInDate = calendar.time
-            timeInString = format.format(timeInDate)
+            val formatter =DateTimeFormatter.ofPattern("HH:mm:ss")
+            timeInDate = LocalDateTime.now()
+            timeInString = timeInDate.format(formatter)
 
             val textView = findViewById<TextView>(R.id.punchInTextView)
             textView.text = timeInString
@@ -186,9 +188,9 @@ class MainActivity : AppCompatActivity(),
         buttonPunchOut.setOnClickListener {
             if ( userHasPunchedIn ) {
                 val calendar = Calendar.getInstance()
-                val format = SimpleDateFormat("HH:mm:ss")
-                timeOutDate = calendar.time
-                timeOutString = format.format(timeOutDate)
+                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")       
+                timeOutDate = LocalDateTime.now()
+                timeOutString = timeOutDate.format(formatter)
 
                 val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
                 timeOutTextView.text = timeOutString
@@ -197,9 +199,13 @@ class MainActivity : AppCompatActivity(),
 
 
                 // TODO: Update to display correct interval.
-                var timeInterval = timeOutDate.time -timeInDate.time
-                val t1 = TimeUnit.MILLISECONDS.toHours(timeInterval)
-                val timeIntervalString = t1
+                val time1 = Duration.between(timeOutDate, timeInDate)
+//                var timeInterval = timeOutDate.time -timeInDate.time
+                val hours = ChronoUnit.HOURS.between(timeInDate, timeOutDate)
+                val minutes = ChronoUnit.MINUTES.between(timeInDate, timeOutDate)
+                val seconds = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
+
+                val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
 
                 timeIntervalTextView.text = "Hours worked: $timeIntervalString"
             }

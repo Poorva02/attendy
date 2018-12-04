@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ShowMyPunches">
+    tools:context=".ShowMyPunches"
+    android:background="@android:color/holo_green_light">
 
     <RelativeLayout
         android:id="@+id/profileHeaderLayout"
@@ -29,6 +30,7 @@
     </RelativeLayout>
 
     <TableLayout
+        android:id="@+id/table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -76,279 +78,295 @@
 
         </TableRow>
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+        </TableLayout>
 
-            <TextView
-                android:id="@+id/Date1textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/25"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/RandomtextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+<!--<TableLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:background="@android:color/holo_blue_light"-->
+    <!--android:stretchColumns="0,1,2,3"-->
+    <!--tools:layout_editor_absoluteX="0dp"-->
+    <!--tools:layout_editor_absoluteY="85dp">-->
 
-            <TextView
-                android:id="@+id/punchin1TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout1TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date1textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/25"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours1tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin1TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout1TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours1tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date2textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/26"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin2TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout2TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date2textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/26"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours2tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin2TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout2TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours2tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date3textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/27"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin3TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout3TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date3textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/27"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours3tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin3TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout3TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours3tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date4textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/28"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin4TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout4TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date4textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/28"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours4tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin4TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout4TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours4tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date5textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/29"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin5TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout5TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date5textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/29"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours5tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin5TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout5TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours5tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date6textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11/30"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin6TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout6TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date6textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="11/30"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours6tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin6TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout6TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="10dp">
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours6tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/Date7textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12/01"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--</TableRow>-->
 
-            <TextView
-                android:id="@+id/punchin7TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+        <!--<TableRow-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_margin="10dp">-->
 
-            <TextView
-                android:id="@+id/punchout7TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="17:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/Date7textView"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="12/01"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/totalhours7tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 hours"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/punchin7TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="9:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-        </TableRow>
+            <!--<TextView-->
+                <!--android:id="@+id/punchout7TV"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="17:00"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
 
-    </TableLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/totalhours7tv"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="8 hours"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:textStyle="bold" />-->
+
+        <!--</TableRow>-->
+
+    <!--</TableLayout>-->
+
 
 </LinearLayout>

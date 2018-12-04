@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,17 +24,16 @@
             </intent-filter>
         </activity>
 
-
-        <!--<activity-->
-            <!--android:name=".MapsActivity"-->
-            <!--android:label="@string/title_activity_maps">-->
-
-        <!--</activity>-->
-
-        <activity android:name=".SignInActivity"/>
+        <!-- <activity -->
+        <!-- android:name=".MapsActivity" -->
+        <!-- android:label="@string/title_activity_maps"> -->
 
 
-        <service android:name=".GeofenceTransitionsIntentService"/>
+        <!-- </activity> -->
+
+        <activity android:name=".SignInActivity" />
+
+        <service android:name=".GeofenceTransitionsIntentService" />
 
         <!--
                     The API key for Google Maps-based APIs is defined as a string resource.
@@ -44,20 +42,25 @@
                     You need a different API key for each encryption key, including the release key that is used to
                     sign the APK for publishing.
                     You can define the keys for the debug and release targets in src/debug/ and src/release/.
-               -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCewmuPiqcHMyE5PK8F2UF5wlWXjI-xpzA" />
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCewmuPiqcHMyE5PK8F2UF5wlWXjI-xpzA"/>
+            android:value="AIzaSyCewmuPiqcHMyE5PK8F2UF5wlWXjI-xpzA" />
 
-        <service android:name=".GeofenceTransitionsIntentService"/>
+        <service android:name=".GeofenceTransitionsIntentService" />
 
-
-    </application>
+        <activity
+            android:name=".ShowMyPunches"/>
+        <!--android:label="@string/title_activity_show_my_punches"
+        android:theme="@style/AppTheme.NoActionBar" /> -->
+</application>
 
 </manifest>

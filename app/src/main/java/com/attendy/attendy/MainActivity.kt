@@ -16,6 +16,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.attendy.attendy.R.id.ShowPunchesButton
+import com.attendy.attendy.R.id.mapView
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -94,6 +96,11 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        ShowPunchesButton.setOnClickListener {
+            val intent = Intent(this,ShowMyPunches::class.java)
+            startActivity(intent)
+        }
 
         mAuth = FirebaseAuth.getInstance()
 
@@ -382,7 +389,7 @@ class MainActivity : AppCompatActivity(),
     private fun markerForGeofence(latLng: LatLng) {
         val title = latLng.latitude.toString() +  ", " + latLng.longitude.toString()
         // Define marker options
-         val markerOptions =  MarkerOptions()
+        val markerOptions =  MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
                 .title(title)
@@ -518,11 +525,11 @@ class MainActivity : AppCompatActivity(),
             return intent
         }
 
-         fun makeNotificationIntent(context: Context, msg: String): Intent {
-             var intent = Intent(context, MainActivity::class.java)
-             intent.putExtra(NOTIFICATION_MSG, msg)
-             return intent
-         }
+        fun makeNotificationIntent(context: Context, msg: String): Intent {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(NOTIFICATION_MSG, msg)
+            return intent
+        }
 
     }
 }

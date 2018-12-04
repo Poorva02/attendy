@@ -32,7 +32,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DateFormat
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -145,8 +144,19 @@ class MainActivity : AppCompatActivity(),
         setupUsername()
         setupPunchIn()
         setUpPunchOut()
-
-
+//
+////
+//        val database = FirebaseDatabase.getInstance()
+////        print(database)
+//        val users = database.getReference("users")
+//        val geofences = database.getReference("geofences")
+//        geofences.setValue("Test")
+//
+//
+//        users.setValue(mUser!!.uid)
+//        val uid = users.child(mUser!!.uid)
+//        val newuser:AttendyUser = AttendyUser(mUsername, mUser!!.email)
+//        uid.setValue(newuser)
 
 
 
@@ -172,7 +182,7 @@ class MainActivity : AppCompatActivity(),
         val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
         buttonPunchIn.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val formatter =DateTimeFormatter.ofPattern("HH:mm:ss")
+            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
             timeInDate = LocalDateTime.now()
             timeInString = timeInDate.format(formatter)
 
@@ -188,7 +198,7 @@ class MainActivity : AppCompatActivity(),
         buttonPunchOut.setOnClickListener {
             if ( userHasPunchedIn ) {
                 val calendar = Calendar.getInstance()
-                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")       
+                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
                 timeOutDate = LocalDateTime.now()
                 timeOutString = timeOutDate.format(formatter)
 
@@ -199,12 +209,19 @@ class MainActivity : AppCompatActivity(),
 
 
                 // TODO: Update to display correct interval.
-                val time1 = Duration.between(timeOutDate, timeInDate)
-//                var timeInterval = timeOutDate.time -timeInDate.time
-                val hours = ChronoUnit.HOURS.between(timeInDate, timeOutDate)
-                val minutes = ChronoUnit.MINUTES.between(timeInDate, timeOutDate)
-                val seconds = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
+                // Sometimes is off by one
+                var seconds = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
 
+
+                var minutes = seconds/60
+                var hours = minutes/60
+
+                if (minutes>60) {
+                    minutes = minutes%60
+                }
+                if (seconds>60) {
+                    seconds = seconds%60
+                }
                 val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
 
                 timeIntervalTextView.text = "Hours worked: $timeIntervalString"

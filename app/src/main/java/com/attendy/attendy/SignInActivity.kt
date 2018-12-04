@@ -1,5 +1,6 @@
 package com.attendy.attendy
 
+//import com.sum.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.User
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.attendy.attendy.model.AttendyUser
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -16,6 +18,9 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.*
+
+
 
 
 /**
@@ -30,6 +35,7 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mSignInButton: SignInButton
     private lateinit var mSharedPreferences: SharedPreferences
+    private lateinit var mDatabaseRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +57,19 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                 .build()
 
         mAuth = FirebaseAuth.getInstance()
+
+
+
+//        print(database)
+//        val users = database.getReference("users")
+//        val geofences = database.getReference("geofences")
+//        geofences.setValue("Test")
+
+
+//        users.setValue(mUser!!.uid)
+//        val uid = users.child(mUser!!.uid)
+//        val newuser: AttendyUser = AttendyUser(mUsername, mUser!!.email)
+//        uid.setValue(newuser)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -80,6 +99,61 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                         Log.w(TAG, "signInWithCredential", task.exception)
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
                     } else {
+
+                        //TODO: Create user in DB
+                        // Check if exists.(snapshot) If not -> New DB entry
+
+                        mDatabaseRef = FirebaseDatabase.getInstance().reference
+
+//
+//                        val snapshot = FirebaseDatabase.s
+
+                        mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                                if (dataSnapshot == null) {
+//
+//                                    val user
+//                                    mDatabaseRef.child("users").child(user.)
+
+                                } else {
+                                    val user = dataSnapshot.getValue(AttendyUser::class.java!!)
+
+
+                                    print(dataSnapshot.toString())
+
+                                    if (user != null) {
+                                        Log.d(TAG, "onDataChange: User username: " + user!!.username + ", email " + user.email + ", uid " + user.uid)
+
+                                    } else {
+
+                                        val database = FirebaseDatabase.getInstance()
+                                        val users = database.getReference("users")
+                                        val geofences = database.getReference("geofences")
+//                                        geofences.setValue("Test")
+
+
+                                        users.setValue(mAuth.currentUser!!.uid)
+                                        val uidRef = users.child(mAuth.currentUser!!.uid)
+                                        val newuser: AttendyUser = AttendyUser(mAuth.currentUser!!.displayName, mAuth.currentUser!!.email, mAuth.currentUser!!.uid)
+                                        uidRef.setValue(newuser)
+//                                        mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).setValue(user)
+                                        Log.d(TAG, "user is null")
+                                    }
+
+
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // Failed to read value
+                                Log.w(TAG, "Failed to read value.", error.toException())
+                            }
+                        })
+
+
+
                         startActivity(Intent( this, MainActivity::class.java))
                         finish()
                     }

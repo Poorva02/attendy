@@ -30,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DateFormat
 import java.time.LocalDateTime
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var timeInDate: LocalDateTime
     private lateinit var timeOutString: String
     private lateinit var timeOutDate: LocalDateTime
-
+    private lateinit var mDatabaseRef: DatabaseReference
 
 
 
@@ -144,6 +145,8 @@ class MainActivity : AppCompatActivity(),
         setupUsername()
         setupPunchIn()
         setUpPunchOut()
+
+        mDatabaseRef = FirebaseDatabase.getInstance().reference
 //
 ////
 //        val database = FirebaseDatabase.getInstance()
@@ -167,8 +170,8 @@ class MainActivity : AppCompatActivity(),
         //display date
         val calendar = Calendar.getInstance()
         val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
-        val CurrentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
-        CurrentDateTextView.text = currentDate
+        val currentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
+        currentDateTextView.text = currentDate
     }
 
     private fun setupUsername() {
@@ -211,19 +214,19 @@ class MainActivity : AppCompatActivity(),
 
 
                 // TODO: Update to display correct interval.
-                // Sometimes is off by one... hence the +1
-                var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate) + 1
+                // Sometimes is off by one...
+                var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
                 Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
 
                 var day = duration/(24*3600)
 //                duration = duration%(24*3600)
 
-                var hours = duration/3600
+                val hours = duration/3600
                 duration%=3600
 
-                var minutes = duration/60
+                val minutes = duration/60
                 duration%=60
-                var seconds = duration
+                val seconds = duration
 
 
                 val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
@@ -231,8 +234,35 @@ class MainActivity : AppCompatActivity(),
                 timeIntervalTextView.text = "Hours worked: $timeIntervalString"
 
                 buttonPunchOut.isEnabled = false
+
+                val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
+
+                mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate).addListenerForSingleValueEvent(object : ValueEventListener {
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        sendPunchInfoToDatabase(currentDate, duration)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(TAG, "Failed to read value.", error.toException())
+                    }
+                })
             }
         }
+    }
+
+    private fun sendPunchInfoToDatabase(currentDate: String, duration: Long) {
+
+        val dataBaseRef = mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate)
+        val punchInRef = dataBaseRef.child("punchInTime")
+        punchInRef.setValue(timeInDate)
+
+        val punchOutRef = dataBaseRef.child("punchOutTime")
+        punchOutRef.setValue(timeOutDate)
+
+        val durationRef = dataBaseRef.child("duration")
+        durationRef.setValue(duration)
+
     }
 
     private fun getGeofencingRequest(): GeofencingRequest {

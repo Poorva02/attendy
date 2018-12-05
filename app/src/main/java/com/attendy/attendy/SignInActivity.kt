@@ -102,7 +102,7 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
 
                         mDatabaseRef = FirebaseDatabase.getInstance().reference
 
-                        mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
+                        mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
 

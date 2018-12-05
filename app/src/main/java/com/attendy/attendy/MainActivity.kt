@@ -189,6 +189,8 @@ class MainActivity : AppCompatActivity(),
             val textView = findViewById<TextView>(R.id.punchInTextView)
             textView.text = timeInString
             userHasPunchedIn = true
+            buttonPunchIn.isEnabled = false
+
         }
     }
 
@@ -209,22 +211,26 @@ class MainActivity : AppCompatActivity(),
 
 
                 // TODO: Update to display correct interval.
-                // Sometimes is off by one
-                var seconds = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
+                // Sometimes is off by one... hence the +1
+                var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate) + 1
+                Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
+
+                var day = duration/(24*3600)
+//                duration = duration%(24*3600)
+
+                var hours = duration/3600
+                duration%=3600
+
+                var minutes = duration/60
+                duration%=60
+                var seconds = duration
 
 
-                var minutes = seconds/60
-                var hours = minutes/60
-
-                if (minutes>60) {
-                    minutes = minutes%60
-                }
-                if (seconds>60) {
-                    seconds = seconds%60
-                }
                 val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
 
                 timeIntervalTextView.text = "Hours worked: $timeIntervalString"
+
+                buttonPunchOut.isEnabled = false
             }
         }
     }

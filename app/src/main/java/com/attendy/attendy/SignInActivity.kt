@@ -100,49 +100,24 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                         Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
                     } else {
 
-                        //TODO: Create user in DB
-                        // Check if exists.(snapshot) If not -> New DB entry
-
                         mDatabaseRef = FirebaseDatabase.getInstance().reference
-
-//
-//                        val snapshot = FirebaseDatabase.s
 
                         mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
 
                                 if (dataSnapshot == null) {
-//
-//                                    val user
-//                                    mDatabaseRef.child("users").child(user.)
 
                                 } else {
                                     val user = dataSnapshot.getValue(AttendyUser::class.java!!)
 
-
-                                    print(dataSnapshot.toString())
+//                                    print(dataSnapshot.toString())
 
                                     if (user != null) {
-                                        Log.d(TAG, "onDataChange: User username: " + user!!.username + ", email " + user.email + ", uid " + user.uid)
-
+                                        Log.d(TAG, "onDataChange: User username: " + user.username + ", email " + user.email + ", uid " + user.uid)
                                     } else {
-
-                                        val database = FirebaseDatabase.getInstance()
-                                        val users = database.getReference("users")
-                                        val geofences = database.getReference("geofences")
-//                                        geofences.setValue("Test")
-
-
-                                        users.setValue(mAuth.currentUser!!.uid)
-                                        val uidRef = users.child(mAuth.currentUser!!.uid)
-                                        val newuser: AttendyUser = AttendyUser(mAuth.currentUser!!.displayName, mAuth.currentUser!!.email, mAuth.currentUser!!.uid)
-                                        uidRef.setValue(newuser)
-//                                        mDatabaseRef.child("users").child(mAuth.currentUser!!.uid).setValue(user)
-                                        Log.d(TAG, "user is null")
+                                       createNewUser()
                                     }
-
-
                                 }
                             }
 
@@ -152,12 +127,21 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                             }
                         })
 
-
-
                         startActivity(Intent( this, MainActivity::class.java))
                         finish()
                     }
                 }
+    }
+
+    private fun createNewUser() {
+        val database = FirebaseDatabase.getInstance()
+        val users = database.getReference("users")
+
+        users.setValue(mAuth.currentUser!!.uid)
+        val uidRef = users.child(mAuth.currentUser!!.uid)
+        val newuser: AttendyUser = AttendyUser(mAuth.currentUser!!.displayName, mAuth.currentUser!!.email, mAuth.currentUser!!.uid)
+        uidRef.setValue(newuser)
+        Log.d(TAG, "onDataChange: Created new user with: username: " + newuser.username + ", email " + newuser.email + ", uid " + newuser.uid)
     }
 
     override fun onClick(v: View?) {

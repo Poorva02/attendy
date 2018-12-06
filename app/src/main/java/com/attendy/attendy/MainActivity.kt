@@ -238,7 +238,11 @@ class MainActivity : AppCompatActivity(),
 
     private fun sendPunchInfoToDatabase(currentDate: String, duration: Long) {
 
-        val dataBaseRef = mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate)
+        val dataBaseRef = mDatabaseRef
+                .child("users")
+                .child(mUser!!.uid)
+                .child("punches")
+                .child(currentDate)
         val punchInRef = dataBaseRef.child("punchInTime")
         punchInRef.setValue(timeInDate)
 

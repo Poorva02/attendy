@@ -30,7 +30,7 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
     // ...
     override fun onHandleIntent(intent: Intent?) {
-        Log.d(TAG, "geofence handled.")
+        Log.d(TAG, "onHandleIntend:: intent: $intent extras: ${intent?.extras}")
 
         val geofencingEvent: GeofencingEvent = GeofencingEvent.fromIntent(intent)
 
@@ -41,20 +41,22 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
 
         val geofenceTransition: Int = geofencingEvent.geofenceTransition
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER
-                || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
 
             val triggeringGeofenes = geofencingEvent.triggeringGeofences
             val geofenceTransitionDetails = getGeofenceTrasitionDetails(geofenceTransition, triggeringGeofenes)
 
             sendNotification(geofenceTransitionDetails)
 
+        } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            val triggeringGeofenes = geofencingEvent.triggeringGeofences
+            val geofenceTransitionDetails = getGeofenceTrasitionDetails(geofenceTransition, triggeringGeofenes)
+            sendNotification(geofenceTransitionDetails)
         }
     }
 
     private fun getGeofenceTrasitionDetails(geofenceTransion: Int, triggeringGeofences: List<Geofence>): String {
         Log.i(TAG, "getGeofenceTrasitionDetails " + geofenceTransion)
-
 
         val triggeringGeofencesList = ArrayList<Geofence>()
 
@@ -72,6 +74,13 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
         return status + TextUtils.join(", ", triggeringGeofencesList)
     }
+
+//    private fun sendGeofenceStatusIntent(geofenceTransion: Int, status: String?) {
+//        Log.i(TAG,"sendGeofencesStatusIntent: transition: $geofenceTransion, status: $status" )
+//
+//        val geofenceStatusIntent = MainActivity.makeGeofenceStatusIntent(applicationContext, status!!)
+//        startActivity(geofenceStatusIntent)
+//    }
 
     private fun sendNotification(msg: String) {
         Log.i(TAG, "sendNotification " + msg)
@@ -133,4 +142,7 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
         }
     }
     private fun getUniqueId() = ((System.currentTimeMillis() % 10000).toInt())
+
+
+
 }

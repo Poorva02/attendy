@@ -147,7 +147,8 @@ class MainActivity : AppCompatActivity(),
         setupUsername()
         setupPunchIn()
         setUpPunchOut()
-        setupInitialGeofences()
+
+
 
     }
 
@@ -269,6 +270,10 @@ class MainActivity : AppCompatActivity(),
         gMap.setOnMapClickListener(this)
 
         setUpMap()
+
+
+
+
     }
 
     // from raywenderlich
@@ -288,7 +293,9 @@ class MainActivity : AppCompatActivity(),
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLng)
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+
             }
+            setupInitialGeofences()
         }
     }
 
@@ -352,6 +359,11 @@ class MainActivity : AppCompatActivity(),
             if (resultCode == Activity.RESULT_OK) {
                 locationUpdateState = true
                 startLocationUpdates()
+
+
+
+
+
             }
         }
     }
@@ -475,14 +487,19 @@ class MainActivity : AppCompatActivity(),
                         val children = dataSnapshot.children
 
                         for (child in children) {
-                            Log.d(TAG, "child's value: \n${child.value}")
+                            val value = child.getValue(AttendyGeofence::class.java)
+
+                            val geofence = createGeofence(LatLng(value!!.lat!!, value.lng!!),
+                                    value.radius!!)
+                            val geofenceRequest = createGeofenceRequest(geofence)
+                            Log.d(TAG,"OLD GEOFENCE REF: \n$geofenceRequest")
+
+                            val latLng = LatLng(value.lat!!, value.lng!!)
+                            markerForGeofence(latLng!!)
+                            addGeofence(geofenceRequest)
 
                         }
-
                     }
-
-
-
                 })
 
 

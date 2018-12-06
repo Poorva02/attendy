@@ -16,6 +16,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.attendy.attendy.model.AttendyGeofence
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -42,7 +43,7 @@ import java.util.*
 // TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
 //    https://www.raywenderlich.com/7372-geofencing-api-tutorial-for-android
 //    https://code.tutsplus.com/tutorials/how-to-work-with-geofences-on-android--cms-26639
-// TODO: Fix nullibity of mUser and mAuth
+// TODO: Fix nullibity and using !!
 
 
 // TODO: Check if initialize to null for values for geofence
@@ -71,8 +72,6 @@ class MainActivity : AppCompatActivity(),
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
 
-
-
     private lateinit var geoFenceMarker: Marker
     private lateinit var geofenceLimits: Circle
     private lateinit var geofencePendingIntent: PendingIntent
@@ -87,6 +86,8 @@ class MainActivity : AppCompatActivity(),
     private lateinit var timeOutString: String
     private lateinit var timeOutDate: LocalDateTime
     private lateinit var mDatabaseRef: DatabaseReference
+    var hasEnteredGeofence = false
+
 
 
 
@@ -140,6 +141,8 @@ class MainActivity : AppCompatActivity(),
                 placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
+
+
         createLocationRequest()
         setupDate()
         setupUsername()
@@ -461,6 +464,7 @@ class MainActivity : AppCompatActivity(),
     override fun onResult(status: Status) {
         if (status.isSuccess) {
             // Save geofence
+            Log.d(TAG, "onResult: status: $status")
             drawGeofence()
 //            startGeofence()
         } else {
@@ -476,20 +480,54 @@ class MainActivity : AppCompatActivity(),
             val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
             val geofenceRequest = createGeofenceRequest(geofence)
             addGeofence(geofenceRequest)
+
+            saveGeofenceToDatabase(geofence, geoFenceMarker.position)
         }
+    }
+
+    private fun saveGeofenceToDatabase(geofence: Geofence, latLng: LatLng) {
+
+
+        mDatabaseRef.child("users").child(mUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val dataBaseRef = mDatabaseRef.child("users").child(mUser!!.uid).child("geofences").child(geofence.requestId)
+
+                val newGeofence = AttendyGeofence(geofence.requestId,
+                        latLng.latitude,
+                        latLng.longitude,
+                        GEOFENCE_RADIUS.toFloat(),
+                        Geofence.NEVER_EXPIRE, GeofencingRequest.INITIAL_TRIGGER_ENTER, // May cause error
+                        45)
+                dataBaseRef.setValue(newGeofence)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        })
     }
 
     // from code.tutsplus
     // Create a Geofence
     private fun createGeofence(latLng: LatLng, radius: Float): Geofence {
         return Geofence.Builder()
-                .setRequestId("Test Geofence")
+                .setRequestId("${latLng.toDBstring()}")
                 .setCircularRegion(latLng.latitude, latLng.longitude, radius)
                 .setExpirationDuration(3_600_000)
                 .setTransitionTypes( GeofencingRequest.INITIAL_TRIGGER_ENTER
                         or GeofencingRequest.INITIAL_TRIGGER_EXIT)
                 .setLoiteringDelay(45)
                 .build()
+    }
+
+    private fun LatLng.toDBstring(): String {
+        Log.d(TAG, "STRING: ${this.toString().replace('.','_')} ")
+
+        val lat = this.latitude.toString().replace('.','_')
+        val long = this.longitude.toString().replace('.','_')
+
+        return "$lat, $long"
     }
 
     // from code.tutsplus
@@ -568,6 +606,7 @@ class MainActivity : AppCompatActivity(),
         private val GEOFENCE_RADIUS: Double = 50.0 // in meters
 
         private val NOTIFICATION_MSG = "NOTIFICATION MSG"
+        private val STATUS_MSG = "STATUS MSG"
 
 
 
@@ -583,5 +622,10 @@ class MainActivity : AppCompatActivity(),
              return intent
          }
 
+        fun makeGeofenceStatusIntent(context: Context, msg: String): Intent {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(STATUS_MSG, msg)
+            return intent
+        }
     }
 }

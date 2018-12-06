@@ -91,8 +91,6 @@ class MainActivity : AppCompatActivity(),
 
 
 
-
-
     // from raywenderlich and zoftino
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,30 +140,14 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
+        mDatabaseRef = FirebaseDatabase.getInstance().reference
 
         createLocationRequest()
         setupDate()
         setupUsername()
         setupPunchIn()
         setUpPunchOut()
-
-        mDatabaseRef = FirebaseDatabase.getInstance().reference
-//
-////
-//        val database = FirebaseDatabase.getInstance()
-////        print(database)
-//        val users = database.getReference("users")
-//        val geofences = database.getReference("geofences")
-//        geofences.setValue("Test")
-//
-//
-//        users.setValue(mUser!!.uid)
-//        val uid = users.child(mUser!!.uid)
-//        val newuser:AttendyUser = AttendyUser(mUsername, mUser!!.email)
-//        uid.setValue(newuser)
-
-
-
+        setupInitialGeofences()
 
     }
 
@@ -472,6 +454,42 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun setupInitialGeofences() {
+
+        val geofencesDatabaseRef = mDatabaseRef
+                .child("users")
+                .child(mUser!!.uid)
+                .child("geofences")
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        Log.d(TAG,"snapshot: \n$dataSnapshot")
+                        val children = dataSnapshot.children
+
+                        for (child in children) {
+                            Log.d(TAG, "child's value: \n${child.value}")
+
+                        }
+
+                    }
+
+
+
+                })
+
+
+//        val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
+//        val geofenceRequest = createGeofenceRequest(geofence)
+//        addGeofence(geofenceRequest)
+//
+//        saveGeofenceToDatabase(geofence, geoFenceMarker.position)
+
+    }
+
     //TODO FIX THIS: geofencemarker is causing null pointer from lateinit.... never initialized
     // from code.tutsplus
     // Start Geofence creation process
@@ -484,6 +502,7 @@ class MainActivity : AppCompatActivity(),
             saveGeofenceToDatabase(geofence, geoFenceMarker.position)
         }
     }
+
 
     private fun saveGeofenceToDatabase(geofence: Geofence, latLng: LatLng) {
 

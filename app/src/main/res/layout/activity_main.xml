@@ -101,16 +101,16 @@
             android:layout_below="@id/punchInTextView"
             android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/ShowPunchesButton"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/punchInButton"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="43dp"
-            android:layout_marginBottom="0dp"
-            android:background="@android:color/holo_green_light"
-            android:text="My Punches" />
+        <!--<Button-->
+            <!--android:id="@+id/ShowPunchesButton"-->
+            <!--android:layout_width="120dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignBottom="@+id/punchInButton"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_marginEnd="43dp"-->
+            <!--android:layout_marginBottom="0dp"-->
+            <!--android:background="@android:color/holo_green_light"-->
+            <!--android:text="My Punches" />-->
 
 
     </RelativeLayout>

@@ -57,10 +57,15 @@
 
         <service android:name=".GeofenceTransitionsIntentService" />
 
+        <activity android:name=".ShowMyPunches" />
+        <!--
+        android:label="@string/title_activity_show_my_punches"
+        android:theme="@style/AppTheme.NoActionBar" />
+        -->
         <activity
-            android:name=".ShowMyPunches"/>
-        <!--android:label="@string/title_activity_show_my_punches"
-        android:theme="@style/AppTheme.NoActionBar" /> -->
-</application>
+            android:name=".AboutUs"
+            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme.NoActionBar" />
+    </application>
 
 </manifest>

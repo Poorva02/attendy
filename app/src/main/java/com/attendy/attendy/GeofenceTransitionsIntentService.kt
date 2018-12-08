@@ -68,8 +68,10 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
 
         if (geofenceTransion == Geofence.GEOFENCE_TRANSITION_ENTER) {
             status = "Entering"
+            MainActivity.setInGeofence(true)
         } else if (geofenceTransion == Geofence.GEOFENCE_TRANSITION_EXIT) {
             status = "Exiting"
+            MainActivity.setInGeofence(false)
         }
 
         return status + TextUtils.join(", ", triggeringGeofencesList)

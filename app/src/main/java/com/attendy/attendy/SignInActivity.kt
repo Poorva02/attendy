@@ -109,7 +109,7 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                                 if (dataSnapshot == null) {
 
                                 } else {
-                                    val user = dataSnapshot.getValue(AttendyUser::class.java!!)
+                                    val user = dataSnapshot.getValue(AttendyUser::class.java)
 
 //                                    print(dataSnapshot.toString())
 

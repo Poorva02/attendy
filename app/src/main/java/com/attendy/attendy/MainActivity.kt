@@ -100,14 +100,6 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        ShowPunchesButton.setOnClickListener {
-//            val intent = Intent(this,ShowMyPunches::class.java)
-//            startActivity(intent)
-//        }
-
-
-
-
         mAuth = FirebaseAuth.getInstance()
 
         // elvis ?:
@@ -130,7 +122,6 @@ class MainActivity : AppCompatActivity(),
                 .build()
 
         Toast.makeText(this, "$mUsername has logged in.", Toast.LENGTH_LONG).show()
-        //TODO : Initialze progress bar and Recyvle view
 
         mapViewBundle = null
         if (savedInstanceState != null) {
@@ -194,8 +185,6 @@ class MainActivity : AppCompatActivity(),
                 userHasPunchedIn = true
                 buttonPunchIn.isEnabled = false
             }
-
-
         }
     }
 
@@ -222,7 +211,7 @@ class MainActivity : AppCompatActivity(),
                     Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
 
                     var day = duration/(24*3600)
-//                duration = duration%(24*3600)
+//                    duration = duration%(24*3600)
 
                     val hours = duration/3600
                     duration%=3600
@@ -233,9 +222,7 @@ class MainActivity : AppCompatActivity(),
 
 
                     val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
-
                     timeIntervalTextView.text = "Hours worked: $timeIntervalString"
-
                     buttonPunchOut.isEnabled = false
 
                     val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
@@ -273,13 +260,6 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun getGeofencingRequest(): GeofencingRequest {
-        return GeofencingRequest.Builder().apply {
-            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-            addGeofences(geofenceList)
-        }.build()
-    }
-
     // from raywenderlich
     override fun onMapReady(googleMap: GoogleMap) {
         gMap = googleMap
@@ -288,10 +268,6 @@ class MainActivity : AppCompatActivity(),
         gMap.setOnMapClickListener(this)
 
         setUpMap()
-
-
-
-
     }
 
     // from raywenderlich
@@ -441,14 +417,11 @@ class MainActivity : AppCompatActivity(),
         print("onMapClick"+latLng)
         markerForGeofence(latLng!!)
         startGeofence()
-
-//        Toast.makeText(this,"Map was clicked.", Toast.LENGTH_LONG).show()
     }
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
         Log.d(TAG, "onConnectionFailed:$connectionResult")
         Toast.makeText(this,"Google Play services error.", Toast.LENGTH_SHORT).show()
-
     }
 
     // from code.tutsplus
@@ -460,10 +433,6 @@ class MainActivity : AppCompatActivity(),
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
                 .title(title)
         if ( gMap!=null ) {
-            // Remove last geoFenceMarker
-//            if (geoFenceMarker != null) {
-//                geoFenceMarker.remove();
-//            }
             geoFenceMarker = gMap.addMarker(markerOptions)
             gMap.addMarker(markerOptions)
 
@@ -484,7 +453,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setupInitialGeofences() {
-
         val geofencesDatabaseRef = mDatabaseRef
                 .child("users")
                 .child(mUser!!.uid)
@@ -508,23 +476,14 @@ class MainActivity : AppCompatActivity(),
                             Log.d(TAG,"OLD GEOFENCE REF: \n$geofenceRequest")
 
                             val latLng = LatLng(value.lat!!, value.lng!!)
-                            markerForGeofence(latLng!!)
+                            markerForGeofence(latLng)
                             addGeofence(geofenceRequest)
 
                         }
                     }
                 })
-
-
-//        val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
-//        val geofenceRequest = createGeofenceRequest(geofence)
-//        addGeofence(geofenceRequest)
-//
-//        saveGeofenceToDatabase(geofence, geoFenceMarker.position)
-
     }
 
-    //TODO FIX THIS: geofencemarker is causing null pointer from lateinit.... never initialized
     // from code.tutsplus
     // Start Geofence creation process
     private fun startGeofence() {
@@ -539,10 +498,7 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun saveGeofenceToDatabase(geofence: Geofence, latLng: LatLng) {
-
-
         mDatabaseRef.child("users").child(mUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener {
-
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val dataBaseRef = mDatabaseRef.child("users").child(mUser!!.uid).child("geofences").child(geofence.requestId)
 
@@ -606,11 +562,6 @@ class MainActivity : AppCompatActivity(),
 
     // from code.tutsplus
     private fun createGeofencePendingIntent(): PendingIntent{
-
-//        if (geofencePendingIntent != null) {
-//            return geofencePendingIntent
-//        }
-
         val intent = Intent(this, GeofenceTransitionsIntentService::class.java)
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
@@ -624,9 +575,6 @@ class MainActivity : AppCompatActivity(),
     // from code.tutsplus
     // Draw Geofence circle on GoogleMap
     private fun drawGeofence() {
-//        if (geofenceLimits != null) {
-//            geofenceLimits.remove()
-//        }
         val circleOptions: CircleOptions = CircleOptions()
                 .center(geoFenceMarker.position)
                 .radius(GEOFENCE_RADIUS)
@@ -636,22 +584,11 @@ class MainActivity : AppCompatActivity(),
         gMap.addCircle(circleOptions)
     }
 
-
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
-
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu, menu)
         return true
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar menu items
@@ -667,20 +604,14 @@ class MainActivity : AppCompatActivity(),
                 true
             }
             R.id.signout -> {
-                FirebaseAuth.getInstance().signOut();
+                FirebaseAuth.getInstance().signOut()
                 true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-
-
-
-
-
     companion object {
-
         private val TAG = "MainActivity"
         // Used to load the 'native-lib' library on application startup
         init {
@@ -695,15 +626,6 @@ class MainActivity : AppCompatActivity(),
         private val NOTIFICATION_MSG = "NOTIFICATION MSG"
         private val STATUS_MSG = "STATUS MSG"
         private var inGeofence: Boolean = false
-
-
-
-
-        fun newIntent(context: Context, latLng: LatLng): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.putExtra(EXTRA_LAT_LNG, latLng)
-            return intent
-        }
 
         fun makeNotificationIntent(context: Context, msg: String): Intent {
             var intent = Intent(context, MainActivity::class.java)
@@ -721,7 +643,5 @@ class MainActivity : AppCompatActivity(),
             Log.d(TAG, "setInGeofence: $bool")
             inGeofence = bool
         }
-
     }
-
 }

@@ -16,6 +16,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.attendy.attendy.model.AttendyGeofence
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -30,17 +31,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 // TODO: Document map view --> http://www.zoftino.com/android-mapview-tutorial
 //    https://www.raywenderlich.com/7372-geofencing-api-tutorial-for-android
 //    https://code.tutsplus.com/tutorials/how-to-work-with-geofences-on-android--cms-26639
-// TODO: Fix nullibity of mUser and mAuth
+// TODO: Fix nullibity and using !!
 
 
 // TODO: Check if initialize to null for values for geofence
@@ -69,8 +72,6 @@ class MainActivity : AppCompatActivity(),
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
 
-
-
     private lateinit var geoFenceMarker: Marker
     private lateinit var geofenceLimits: Circle
     private lateinit var geofencePendingIntent: PendingIntent
@@ -81,10 +82,11 @@ class MainActivity : AppCompatActivity(),
     private var userHasPunchedIn: Boolean = false
 
     private lateinit var timeInString: String
-    private lateinit var timeInDate: Date
+    private lateinit var timeInDate: LocalDateTime
     private lateinit var timeOutString: String
-    private lateinit var timeOutDate: Date
-
+    private lateinit var timeOutDate: LocalDateTime
+    private lateinit var mDatabaseRef: DatabaseReference
+    var hasEnteredGeofence = false
 
 
 
@@ -138,14 +140,14 @@ class MainActivity : AppCompatActivity(),
                 placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
+
+        mDatabaseRef = FirebaseDatabase.getInstance().reference
+
         createLocationRequest()
         setupDate()
         setupUsername()
         setupPunchIn()
         setUpPunchOut()
-
-
-
 
 
 
@@ -155,8 +157,8 @@ class MainActivity : AppCompatActivity(),
         //display date
         val calendar = Calendar.getInstance()
         val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
-        val CurrentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
-        CurrentDateTextView.text = currentDate
+        val currentDateTextView = findViewById<TextView>(R.id.currentDateTextView)
+        currentDateTextView.text = currentDate
     }
 
     private fun setupUsername() {
@@ -168,15 +170,21 @@ class MainActivity : AppCompatActivity(),
     private fun setupPunchIn() {
         //display punch in time
         val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
-        buttonPunchIn.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val format = SimpleDateFormat("HH:mm:ss")
-            timeInDate = calendar.time
-            timeInString = format.format(timeInDate)
 
-            val textView = findViewById<TextView>(R.id.punchInTextView)
-            textView.text = timeInString
-            userHasPunchedIn = true
+        buttonPunchIn.setOnClickListener {
+            if(inGeofence) {
+                val calendar = Calendar.getInstance()
+                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                timeInDate = LocalDateTime.now()
+                timeInString = timeInDate.format(formatter)
+
+                val textView = findViewById<TextView>(R.id.punchInTextView)
+                textView.text = timeInString
+                userHasPunchedIn = true
+                buttonPunchIn.isEnabled = false
+            }
+
+
         }
     }
 
@@ -185,25 +193,73 @@ class MainActivity : AppCompatActivity(),
         val buttonPunchOut = findViewById<Button>(R.id.punchOutButton)
         buttonPunchOut.setOnClickListener {
             if ( userHasPunchedIn ) {
-                val calendar = Calendar.getInstance()
-                val format = SimpleDateFormat("HH:mm:ss")
-                timeOutDate = calendar.time
-                timeOutString = format.format(timeOutDate)
+                if (inGeofence) {
+                    val calendar = Calendar.getInstance()
+                    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                    timeOutDate = LocalDateTime.now()
+                    timeOutString = timeOutDate.format(formatter)
 
-                val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
-                timeOutTextView.text = timeOutString
+                    val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
+                    timeOutTextView.text = timeOutString
 
-                val timeIntervalTextView = findViewById<TextView>(R.id.totalHoursTextView)
+                    val timeIntervalTextView = findViewById<TextView>(R.id.totalHoursTextView)
 
 
-                // TODO: Update to display correct interval.
-                var timeInterval = timeOutDate.time -timeInDate.time
-                val t1 = TimeUnit.MILLISECONDS.toHours(timeInterval)
-                val timeIntervalString = t1
+                    // TODO: Update to display correct interval.
+                    // Sometimes is off by one...
+                    var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
+                    Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
 
-                timeIntervalTextView.text = "Hours worked: $timeIntervalString"
+                    var day = duration/(24*3600)
+//                duration = duration%(24*3600)
+
+                    val hours = duration/3600
+                    duration%=3600
+
+                    val minutes = duration/60
+                    duration%=60
+                    val seconds = duration
+
+
+                    val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
+
+                    timeIntervalTextView.text = "Hours worked: $timeIntervalString"
+
+                    buttonPunchOut.isEnabled = false
+
+                    val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
+
+                    mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate).addListenerForSingleValueEvent(object : ValueEventListener {
+
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            sendPunchInfoToDatabase(currentDate, duration)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.w(TAG, "Failed to read value.", error.toException())
+                        }
+                    })
+                }
             }
         }
+    }
+
+    private fun sendPunchInfoToDatabase(currentDate: String, duration: Long) {
+
+        val dataBaseRef = mDatabaseRef
+                .child("users")
+                .child(mUser!!.uid)
+                .child("punches")
+                .child(currentDate)
+        val punchInRef = dataBaseRef.child("punchInTime")
+        punchInRef.setValue(timeInDate)
+
+        val punchOutRef = dataBaseRef.child("punchOutTime")
+        punchOutRef.setValue(timeOutDate)
+
+        val durationRef = dataBaseRef.child("duration")
+        durationRef.setValue(duration)
+
     }
 
     private fun getGeofencingRequest(): GeofencingRequest {
@@ -221,6 +277,10 @@ class MainActivity : AppCompatActivity(),
         gMap.setOnMapClickListener(this)
 
         setUpMap()
+
+
+
+
     }
 
     // from raywenderlich
@@ -240,7 +300,9 @@ class MainActivity : AppCompatActivity(),
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 placeMarkerOnMap(currentLatLng)
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+
             }
+            setupInitialGeofences()
         }
     }
 
@@ -402,11 +464,53 @@ class MainActivity : AppCompatActivity(),
     override fun onResult(status: Status) {
         if (status.isSuccess) {
             // Save geofence
+            Log.d(TAG, "onResult: status: $status")
             drawGeofence()
 //            startGeofence()
         } else {
             // Handle error
         }
+    }
+
+    private fun setupInitialGeofences() {
+
+        val geofencesDatabaseRef = mDatabaseRef
+                .child("users")
+                .child(mUser!!.uid)
+                .child("geofences")
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        Log.d(TAG,"snapshot: \n$dataSnapshot")
+                        val children = dataSnapshot.children
+
+                        for (child in children) {
+                            val value = child.getValue(AttendyGeofence::class.java)
+
+                            val geofence = createGeofence(LatLng(value!!.lat!!, value.lng!!),
+                                    value.radius!!)
+                            val geofenceRequest = createGeofenceRequest(geofence)
+                            Log.d(TAG,"OLD GEOFENCE REF: \n$geofenceRequest")
+
+                            val latLng = LatLng(value.lat!!, value.lng!!)
+                            markerForGeofence(latLng!!)
+                            addGeofence(geofenceRequest)
+
+                        }
+                    }
+                })
+
+
+//        val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
+//        val geofenceRequest = createGeofenceRequest(geofence)
+//        addGeofence(geofenceRequest)
+//
+//        saveGeofenceToDatabase(geofence, geoFenceMarker.position)
+
     }
 
     //TODO FIX THIS: geofencemarker is causing null pointer from lateinit.... never initialized
@@ -417,20 +521,55 @@ class MainActivity : AppCompatActivity(),
             val geofence = createGeofence(geoFenceMarker.position, GEOFENCE_RADIUS.toFloat())
             val geofenceRequest = createGeofenceRequest(geofence)
             addGeofence(geofenceRequest)
+
+            saveGeofenceToDatabase(geofence, geoFenceMarker.position)
         }
+    }
+
+
+    private fun saveGeofenceToDatabase(geofence: Geofence, latLng: LatLng) {
+
+
+        mDatabaseRef.child("users").child(mUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val dataBaseRef = mDatabaseRef.child("users").child(mUser!!.uid).child("geofences").child(geofence.requestId)
+
+                val newGeofence = AttendyGeofence(geofence.requestId,
+                        latLng.latitude,
+                        latLng.longitude,
+                        GEOFENCE_RADIUS.toFloat(),
+                        Geofence.NEVER_EXPIRE, GeofencingRequest.INITIAL_TRIGGER_ENTER, // May cause error
+                        45)
+                dataBaseRef.setValue(newGeofence)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        })
     }
 
     // from code.tutsplus
     // Create a Geofence
     private fun createGeofence(latLng: LatLng, radius: Float): Geofence {
         return Geofence.Builder()
-                .setRequestId("Test Geofence")
+                .setRequestId("${latLng.toDBstring()}")
                 .setCircularRegion(latLng.latitude, latLng.longitude, radius)
                 .setExpirationDuration(3_600_000)
                 .setTransitionTypes( GeofencingRequest.INITIAL_TRIGGER_ENTER
                         or GeofencingRequest.INITIAL_TRIGGER_EXIT)
                 .setLoiteringDelay(45)
                 .build()
+    }
+
+    private fun LatLng.toDBstring(): String {
+        Log.d(TAG, "STRING: ${this.toString().replace('.','_')} ")
+
+        val lat = this.latitude.toString().replace('.','_')
+        val long = this.longitude.toString().replace('.','_')
+
+        return "$lat, $long"
     }
 
     // from code.tutsplus
@@ -488,7 +627,6 @@ class MainActivity : AppCompatActivity(),
 
 
 
-
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -509,6 +647,9 @@ class MainActivity : AppCompatActivity(),
         private val GEOFENCE_RADIUS: Double = 50.0 // in meters
 
         private val NOTIFICATION_MSG = "NOTIFICATION MSG"
+        private val STATUS_MSG = "STATUS MSG"
+        private var inGeofence: Boolean = false
+
 
 
 
@@ -524,5 +665,15 @@ class MainActivity : AppCompatActivity(),
              return intent
          }
 
+        fun makeGeofenceStatusIntent(context: Context, msg: String): Intent {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(STATUS_MSG, msg)
+            return intent
+        }
+
+        fun setInGeofence(bool: Boolean) {
+            Log.d(TAG, "setInGeofence: $bool")
+            inGeofence = bool
+        }
     }
 }

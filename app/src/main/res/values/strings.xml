@@ -15,5 +15,7 @@
     <string name="geofence_too_many_pending_intents">
   You have provided too many PendingIntents to the addGeofences() call.
 </string>
+    <string name="title_activity_show_my_punches">ShowMyPunches</string>
+    <string name="title_activity_about_us">AboutUs</string>
 
 </resources>

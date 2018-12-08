@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AboutUs"
+    android:background="@android:color/holo_green_light"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/profileHeaderLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/aboutusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_toEndOf="@+id/profileImageButton"
+            android:layout_toRightOf="@+id/profileImageButton"
+            android:text="About Us"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/AboutattendyHeaderLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/aboutAttendyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Attendy:"
+            android:textSize="23sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/aboutattendyDescTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Write something about attendy"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_below="@+id/aboutAttendyTextView"/>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/aboutusLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/CreatorsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Creators:"
+            android:textSize="23sp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/PoorvaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/CreatorsTextView"
+            android:layout_margin="5dp"
+            android:text="Poorva Rathi"
+            android:textStyle="bold"
+            android:textSize="19sp"></TextView>
+
+        <TextView
+            android:id="@+id/AboutPoorvaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PoorvaTextView"
+            android:layout_margin="5dp"
+            android:text="Something to be written"
+            android:textSize="17sp"></TextView>
+
+        <TextView
+            android:id="@+id/DustynTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/AboutPoorvaTextView"
+            android:layout_margin="5dp"
+            android:text="Dustyn August"
+            android:textStyle="bold"
+            android:textSize="19sp"></TextView>
+
+        <TextView
+            android:id="@+id/AboutDustynTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/DustynTextView"
+            android:layout_margin="5dp"
+            android:text="Something to be written"
+            android:textSize="17sp"></TextView>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

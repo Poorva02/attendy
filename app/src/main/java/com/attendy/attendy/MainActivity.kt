@@ -11,11 +11,16 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.attendy.attendy.R.id.mapView
 import com.attendy.attendy.model.AttendyGeofence
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.ConnectionResult
@@ -23,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.common.api.Status
+import com.google.android.gms.common.internal.BaseGmsClient
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -96,6 +102,14 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        ShowPunchesButton.setOnClickListener {
+//            val intent = Intent(this,ShowMyPunches::class.java)
+//            startActivity(intent)
+//        }
+
+
+
 
         mAuth = FirebaseAuth.getInstance()
 
@@ -444,7 +458,7 @@ class MainActivity : AppCompatActivity(),
     private fun markerForGeofence(latLng: LatLng) {
         val title = latLng.latitude.toString() +  ", " + latLng.longitude.toString()
         // Define marker options
-         val markerOptions =  MarkerOptions()
+        val markerOptions =  MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
                 .title(title)
@@ -659,11 +673,43 @@ class MainActivity : AppCompatActivity(),
             return intent
         }
 
-         fun makeNotificationIntent(context: Context, msg: String): Intent {
-             var intent = Intent(context, MainActivity::class.java)
-             intent.putExtra(NOTIFICATION_MSG, msg)
-             return intent
-         }
+        fun makeNotificationIntent(context: Context, msg: String): Intent {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(NOTIFICATION_MSG, msg)
+            return intent
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle presses on the action bar menu items
+        when (item.itemId) {
+            R.id.showmypunches -> {
+                val intent1 = Intent(this, ShowMyPunches::class.java)
+                startActivity(intent1)
+                true
+            }
+            R.id.aboutus -> {
+                val intent2 = Intent(this, AboutUs::class.java)
+                startActivity(intent2)
+                true
+            }
+            R.id.signout -> {
+                FirebaseAuth.getInstance().signOut();
+                true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
         fun makeGeofenceStatusIntent(context: Context, msg: String): Intent {
             var intent = Intent(context, MainActivity::class.java)
@@ -676,4 +722,5 @@ class MainActivity : AppCompatActivity(),
             inGeofence = bool
         }
     }
+}
 }

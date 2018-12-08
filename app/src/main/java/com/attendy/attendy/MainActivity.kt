@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(),
 
 
 
+
     // from raywenderlich and zoftino
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,16 +170,20 @@ class MainActivity : AppCompatActivity(),
     private fun setupPunchIn() {
         //display punch in time
         val buttonPunchIn = findViewById<Button>(R.id.punchInButton)
-        buttonPunchIn.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-            timeInDate = LocalDateTime.now()
-            timeInString = timeInDate.format(formatter)
 
-            val textView = findViewById<TextView>(R.id.punchInTextView)
-            textView.text = timeInString
-            userHasPunchedIn = true
-            buttonPunchIn.isEnabled = false
+        buttonPunchIn.setOnClickListener {
+            if(inGeofence) {
+                val calendar = Calendar.getInstance()
+                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                timeInDate = LocalDateTime.now()
+                timeInString = timeInDate.format(formatter)
+
+                val textView = findViewById<TextView>(R.id.punchInTextView)
+                textView.text = timeInString
+                userHasPunchedIn = true
+                buttonPunchIn.isEnabled = false
+            }
+
 
         }
     }
@@ -188,51 +193,53 @@ class MainActivity : AppCompatActivity(),
         val buttonPunchOut = findViewById<Button>(R.id.punchOutButton)
         buttonPunchOut.setOnClickListener {
             if ( userHasPunchedIn ) {
-                val calendar = Calendar.getInstance()
-                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-                timeOutDate = LocalDateTime.now()
-                timeOutString = timeOutDate.format(formatter)
+                if (inGeofence) {
+                    val calendar = Calendar.getInstance()
+                    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                    timeOutDate = LocalDateTime.now()
+                    timeOutString = timeOutDate.format(formatter)
 
-                val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
-                timeOutTextView.text = timeOutString
+                    val timeOutTextView = findViewById<TextView>(R.id.punchOutTextView)
+                    timeOutTextView.text = timeOutString
 
-                val timeIntervalTextView = findViewById<TextView>(R.id.totalHoursTextView)
+                    val timeIntervalTextView = findViewById<TextView>(R.id.totalHoursTextView)
 
 
-                // TODO: Update to display correct interval.
-                // Sometimes is off by one...
-                var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
-                Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
+                    // TODO: Update to display correct interval.
+                    // Sometimes is off by one...
+                    var duration = ChronoUnit.SECONDS.between(timeInDate, timeOutDate)
+                    Log.d(TAG,"setupPunchOut:: \ntimeInDate: $timeInDate, \ntimeOutDate: $timeOutDate, \nduration: $duration")
 
-                var day = duration/(24*3600)
+                    var day = duration/(24*3600)
 //                duration = duration%(24*3600)
 
-                val hours = duration/3600
-                duration%=3600
+                    val hours = duration/3600
+                    duration%=3600
 
-                val minutes = duration/60
-                duration%=60
-                val seconds = duration
+                    val minutes = duration/60
+                    duration%=60
+                    val seconds = duration
 
 
-                val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
+                    val timeIntervalString = "${String.format("%02d", hours)}:${String.format("%02d", minutes)}:${String.format("%02d", seconds)}"
 
-                timeIntervalTextView.text = "Hours worked: $timeIntervalString"
+                    timeIntervalTextView.text = "Hours worked: $timeIntervalString"
 
-                buttonPunchOut.isEnabled = false
+                    buttonPunchOut.isEnabled = false
 
-                val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
+                    val currentDate = DateFormat.getDateInstance(DateFormat.FULL).format(calendar.time)
 
-                mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate).addListenerForSingleValueEvent(object : ValueEventListener {
+                    mDatabaseRef.child("users").child(mUser!!.uid).child(currentDate).addListenerForSingleValueEvent(object : ValueEventListener {
 
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        sendPunchInfoToDatabase(currentDate, duration)
-                    }
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            sendPunchInfoToDatabase(currentDate, duration)
+                        }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "Failed to read value.", error.toException())
-                    }
-                })
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.w(TAG, "Failed to read value.", error.toException())
+                        }
+                    })
+                }
             }
         }
     }
@@ -359,11 +366,6 @@ class MainActivity : AppCompatActivity(),
             if (resultCode == Activity.RESULT_OK) {
                 locationUpdateState = true
                 startLocationUpdates()
-
-
-
-
-
             }
         }
     }
@@ -625,7 +627,6 @@ class MainActivity : AppCompatActivity(),
 
 
 
-
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -647,6 +648,8 @@ class MainActivity : AppCompatActivity(),
 
         private val NOTIFICATION_MSG = "NOTIFICATION MSG"
         private val STATUS_MSG = "STATUS MSG"
+        private var inGeofence: Boolean = false
+
 
 
 
@@ -666,6 +669,11 @@ class MainActivity : AppCompatActivity(),
             var intent = Intent(context, MainActivity::class.java)
             intent.putExtra(STATUS_MSG, msg)
             return intent
+        }
+
+        fun setInGeofence(bool: Boolean) {
+            Log.d(TAG, "setInGeofence: $bool")
+            inGeofence = bool
         }
     }
 }

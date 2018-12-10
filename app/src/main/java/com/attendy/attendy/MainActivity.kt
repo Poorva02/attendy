@@ -605,6 +605,8 @@ class MainActivity : AppCompatActivity(),
             }
             R.id.signout -> {
                 FirebaseAuth.getInstance().signOut()
+
+                startActivity(Intent(this, SignInActivity::class.java))
                 true
             }
         }

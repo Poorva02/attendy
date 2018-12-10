@@ -42,7 +42,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
         setContentView(R.layout.activity_signin)
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
         mSignInButton = findViewById(R.id.sign_in_button)
         mSignInButton.setOnClickListener(this)
 
@@ -57,19 +56,6 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                 .build()
 
         mAuth = FirebaseAuth.getInstance()
-
-
-
-//        print(database)
-//        val users = database.getReference("users")
-//        val geofences = database.getReference("geofences")
-//        geofences.setValue("Test")
-
-
-//        users.setValue(mUser!!.uid)
-//        val uid = users.child(mUser!!.uid)
-//        val newuser: AttendyUser = AttendyUser(mUsername, mUser!!.email)
-//        uid.setValue(newuser)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

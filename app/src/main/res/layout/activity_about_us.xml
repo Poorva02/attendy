@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Write something about attendy"
+            android:text="An attendance tracking tool based on geolocation.\nWe used: Google Maps, Google Services Location, Firebase Auth, and Firebase Realtime Database"
             android:textSize="17sp"
             android:textStyle="bold"
             android:layout_below="@+id/aboutAttendyTextView"/>

@@ -92,18 +92,14 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
 
-                                if (dataSnapshot == null) {
-
-                                } else {
-                                    val user = dataSnapshot.getValue(AttendyUser::class.java)
+                                val user = dataSnapshot.getValue(AttendyUser::class.java)
 
 //                                    print(dataSnapshot.toString())
 
-                                    if (user != null) {
-                                        Log.d(TAG, "onDataChange: User username: " + user.username + ", email " + user.email + ", uid " + user.uid)
-                                    } else {
-                                       createNewUser()
-                                    }
+                                if (user != null) {
+                                    Log.d(TAG, "onDataChange: User username: " + user.username + ", email " + user.email + ", uid " + user.uid)
+                                } else {
+                                    createNewUser()
                                 }
                             }
 
@@ -121,12 +117,8 @@ class SignInActivity: AppCompatActivity(), View.OnClickListener, GoogleApiClient
 
     private fun createNewUser() {
         val database = FirebaseDatabase.getInstance()
-        val users = database.getReference("users")
-
-        users.setValue(mAuth.currentUser!!.uid)
-        val uidRef = users.child(mAuth.currentUser!!.uid)
         val newuser: AttendyUser = AttendyUser(mAuth.currentUser!!.displayName, mAuth.currentUser!!.email, mAuth.currentUser!!.uid)
-        uidRef.setValue(newuser)
+        database.reference.child("users").child(mAuth.currentUser!!.uid).setValue(newuser)
         Log.d(TAG, "onDataChange: Created new user with: username: " + newuser.username + ", email " + newuser.email + ", uid " + newuser.uid)
     }
 

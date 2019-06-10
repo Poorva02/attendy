@@ -44,16 +44,16 @@
                     You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCewmuPiqcHMyE5PK8F2UF5wlWXjI-xpzA" />
+            android:name=""
+            android:value="" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCewmuPiqcHMyE5PK8F2UF5wlWXjI-xpzA" />
+            android:name="Y"
+            android:value="" />
 
         <service android:name=".GeofenceTransitionsIntentService" />
 
